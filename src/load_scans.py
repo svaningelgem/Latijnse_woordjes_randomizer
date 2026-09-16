@@ -6,13 +6,13 @@ from tess import image2data
 try:
     from PIL import Image
 except ImportError:
-    import Image
+    pass
 
-SCAN_DIR = Path(__file__).parent / '../scans'
+SCAN_DIR = Path(__file__).parent / "../scans"
 
 
 def _cleanup_line(line):
-    line = [x.replace('Mm', 'm').replace('Vv', 'v') for x in line.values()]
+    line = [x.replace("Mm", "m").replace("Vv", "v") for x in line.values()]
     if not line:
         return []
 
@@ -33,7 +33,7 @@ def _group_horizontally(paper):
             entry = entry[0]
 
             if prev_coord and coord < running_sum + 20:
-                new_line[prev_coord] += ' ' + entry[0]
+                new_line[prev_coord] += " " + entry[0]
             else:
                 prev_coord = coord
                 new_line[prev_coord] = entry[0]
@@ -62,38 +62,41 @@ def _group_vertically(paper):
     return _group_horizontally(new_paper)
 
 
-def _load_data(img: Path, language: str = 'nld'):
+def _load_data(img: Path, language: str = "nld"):
     data_nld = image2data(img, language=language)
     data_nld = iter(data_nld.splitlines())
 
-    headers = next(data_nld).split('\t')
+    headers = next(data_nld).split("\t")
 
     paper = {}
 
     for line in data_nld:
-        line = dict(zip(headers, line.split('\t')))
-        if line['text'].strip() == '':
+        line = dict(zip(headers, line.split("\t")))
+        if line["text"].strip() == "":
             continue
 
-        paper.setdefault(int(line['top']), {}).setdefault(int(line['left']), []).append((line['text'], int(line['width'])))
+        paper.setdefault(int(line["top"]), {}).setdefault(int(line["left"]), []).append(
+            (line["text"], int(line["width"]))
+        )
 
     return _group_vertically(paper)
 
 
 def _load_scans_from(path):
-    with open(Path(__file__).parent / '../csvs/output.csv', 'w', encoding='utf8', newline='') as fp:
+    with open(Path(__file__).parent / "../csvs/output.csv", "w", encoding="utf8", newline="") as fp:
         writer = csv.writer(fp)
-        writer.writerow(['Latijn', 'Genitief', 'Vertaling', 'Geheugensteun'])
+        writer.writerow(["Latijn", "Genitief", "Vertaling", "Geheugensteun"])
 
-        for img in path.rglob('*.jpg'):
-            print('Working on', img)
+        for img in path.rglob("*.jpg"):
+            print("Working on", img)
 
             paper = _load_data(img)
             for v in paper.values():
-                if len(v) <= 1: continue
+                if len(v) <= 1:
+                    continue
 
                 writer.writerow(v)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     _load_scans_from(SCAN_DIR)
