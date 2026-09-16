@@ -6,7 +6,9 @@ except ImportError:
     import Image
 import pytesseract
 
-pytesseract.pytesseract.tesseract_cmd = r"E:\Latijnse_woordjes_randomizer\exe\tesseract.exe"
+pytesseract.pytesseract.tesseract_cmd = (
+    r"E:\Latijnse_woordjes_randomizer\exe\tesseract.exe"
+)
 
 
 def get_languages():

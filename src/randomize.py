@@ -15,7 +15,9 @@ def _load_data(dir) -> list:
         with open(filename, encoding="utf8") as fp:
             reader = csv.reader(fp)
 
-            data.extend([filename.stem] + line for line in reader if line[0] != "Latijn")
+            data.extend(
+                [filename.stem] + line for line in reader if line[0] != "Latijn"
+            )
 
     return data
 

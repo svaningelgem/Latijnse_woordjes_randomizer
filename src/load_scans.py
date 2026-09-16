@@ -83,7 +83,9 @@ def _load_data(img: Path, language: str = "nld"):
 
 
 def _load_scans_from(path):
-    with open(Path(__file__).parent / "../csvs/output.csv", "w", encoding="utf8", newline="") as fp:
+    with open(
+        Path(__file__).parent / "../csvs/output.csv", "w", encoding="utf8", newline=""
+    ) as fp:
         writer = csv.writer(fp)
         writer.writerow(["Latijn", "Genitief", "Vertaling", "Geheugensteun"])
 
